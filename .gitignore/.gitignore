@@ -1,0 +1,12 @@
+*.suo
+*.sdf
+*.user
+*.ipch
+bin
+obj
+packages
+.vs
+.nuget
+Debug
+Release
+*.pyc

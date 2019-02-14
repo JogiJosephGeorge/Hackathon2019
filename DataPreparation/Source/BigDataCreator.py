@@ -98,7 +98,7 @@ class BigDataCreator:
     
     # - - - - - - - - - - - - - - - - - - - - - - - -
                 
-    def CreateNextSetOfData(self, fle, optimalData, trendFactor, leastValue, mostValue, periodReq):
+    def CreateNextSetOfData2(self, fle, optimalData, trendFactor, leastValue, mostValue, periodReq):
         nUpperMedian = 5
         nLowerMedian = -5
         ntrendVar = 0;
@@ -174,7 +174,92 @@ class BigDataCreator:
             
             if haltProduction == True:
                 break
-    
+
+    def CreateNextSetOfData(self, fle, optimalData, trendFactor, leastValue, mostValue, periodReq):
+        nUpperMedian = 5
+        nLowerMedian = -5
+        ntrendVar = 0;
+        haltProduction = False
+        nextStepFreq = 0
+
+        trendDataSet = line.split('\t')
+        trendGenFactors = []
+        for part in trendDataSet
+            trendGenFactors.append(float(part))
+        blockData.append(blockPart)
+
+
+        if trendFactor == "UP":
+            nextStepFreq = int(periodReq / (mostValue - optimalData))
+        elif trendFactor == "DN":
+            nextStepFreq = int(periodReq / (optimalData - leastValue))
+
+        for timePeriod in range(periodReq):
+            if 0 == timePeriod % nextStepFreq:
+                if trendFactor == "UP":
+                    ntrendVar += 1;
+                elif trendFactor == "DN":
+                    ntrendVar -= 1;
+            ltLeft = optimalData + ntrendVar + random.randint(nLowerMedian, nUpperMedian)
+            ltRight = optimalData + ntrendVar + random.randint(nLowerMedian, nUpperMedian)
+            rtLeft = optimalData + ntrendVar + random.randint(nLowerMedian, nUpperMedian)
+            rtRight = optimalData + ntrendVar + random.randint(nLowerMedian, nUpperMedian)
+
+            if timePeriod >= periodReq:
+                if (ltLeft < leastValue or ltRight < leastValue or \
+                        rtLeft < leastValue or rtRight < leastValue or \
+                        ltLeft > mostValue or ltRight > mostValue or \
+                        rtLeft > mostValue or rtRight < mostValue):
+                    haltProduction = True
+                else:
+                    nSetIdxWrong = random.randint(0, 3)
+                    if trendFactor == "UP":
+                        if 0 == nSetIdxWrong:
+                            ltLeft = mostValue + 5
+                        elif 1 == nSetIdxWrong:
+                            ltRight = mostValue + 5
+                        elif 2 == nSetIdxWrong:
+                            rtLeft = mostValue + 5
+                        elif 3 == nSetIdxWrong:
+                            rtRight = mostValue + 5
+                    elif trendFactor == "DN":
+                        if 0 == nSetIdxWrong:
+                            ltLeft = leastValue - 5
+                        elif 1 == nSetIdxWrong:
+                            ltRight = leastValue - 5
+                        elif 2 == nSetIdxWrong:
+                            rtLeft = leastValue - 5
+                        elif 3 == nSetIdxWrong:
+                            rtRight = leastValue - 5
+
+                    haltProduction = True
+            else:
+                if ltLeft < leastValue:
+                    ltLeft = leastValue + random.randint(nLowerMedian, nUpperMedian)
+                if ltRight < leastValue:
+                    ltRight = leastValue + random.randint(nLowerMedian, nUpperMedian)
+                if rtLeft < leastValue:
+                    rtLeft = leastValue + random.randint(nLowerMedian, nUpperMedian)
+                if rtRight < leastValue:
+                    rtRight = leastValue + random.randint(nLowerMedian, nUpperMedian)
+                if ltLeft > mostValue:
+                    ltLeft = mostValue - random.randint(nLowerMedian, nUpperMedian)
+                if ltRight > mostValue:
+                    ltRight = mostValue - random.randint(nLowerMedian, nUpperMedian)
+                if rtLeft > mostValue:
+                    rtLeft = mostValue - random.randint(nLowerMedian, nUpperMedian)
+                if rtRight > mostValue:
+                    rtRight = mostValue - random.randint(nLowerMedian, nUpperMedian)
+
+            # time = '09:57:59.714'
+            self.startTimeValue += datetime.timedelta(seconds=30)
+            time = self.startTimeValue
+            line = '{0},{1},{2},{3},{4}\n'.format(time, ltLeft, ltRight, rtLeft, rtRight)
+            self.WriteLine(fle, line)
+
+            if haltProduction == True:
+                break
+
     def getFrequencyPerMonth(self):
         return 2 * 60 * 24 * 30 
 
